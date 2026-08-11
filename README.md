@@ -8,6 +8,12 @@ Runs entirely in the browser. No backend, no API keys, no cost. Works for any br
 
 **Live demo:** [aurics.ai/scorecard](https://aurics.ai) · Built on Claude Code as part of an AI-native GTM measurement stack.
 
+**Substack:** [Building the AI Visibility Tracker](https://gtmbuilder.substack.com/p/one-ai-assistant-gap-is-still-a-gtm)
+
+**Substack:** [4 AI Tools to Answer What To Do About AEO](https://gtmbuilder.substack.com/p/experience-why-i-built-four-aeo-tools)
+
+**Substack:** [6-Layer AEO + SEO Build Checklist for an AI-Native Marketing Engine](https://gtmbuilder.substack.com/p/framework-an-aeo-seo-build-checklist)
+
 ---
 
 ## The six metrics
