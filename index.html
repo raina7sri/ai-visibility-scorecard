@@ -154,14 +154,14 @@
 <section class="hero">
   <div class="hero-inner">
     <h1>AI Visibility Scorecard</h1>
-    <p class="lead">Measure how ChatGPT, Gemini, Perplexity &amp; Claude <b>recommend, mention, and cite</b> your brand when buyers ask category questions — the metric traditional SEO tools miss.</p>
+    <p class="lead">Measure how ChatGPT, Gemini, Perplexity, Claude &amp; Google AI Overviews <b>recommend, mention, and cite</b> your brand when buyers ask category questions — the metric traditional SEO tools miss.</p>
     <ul class="value-bullets">
       <li>Works for any brand or category, at any stage — a Fortune 500 launching a new product, an established brand repositioning, or an early-stage startup entering a category.</li>
       <li>The demo scores a fictional placeholder brand, <b>ABC</b>, against 4 assistants — swap in your own in seconds.</li>
     </ul>
     <div class="value-checks">
       <span><b>✓</b> Fully customizable</span>
-      <span><b>✓</b> Doesn't store your data</span>
+      <span><b>✓</b> Stores scores locally</span>
       <span><b>✓</b> Downloadable CSV</span>
       <span><b>✓</b> Free, with your own AI assistants</span>
     </div>
@@ -181,19 +181,21 @@
 
   <!-- 2 · LIVE DEMO DASHBOARD -->
   <section class="block" id="dashboard">
-    <h2>See It Live</h2>
+    <h2>Score the observed answers</h2><p>Collect responses manually in the actual product. For AI Overviews, use complete only when an overview is present; otherwise choose no_overview, unavailable or invalid. Unchecked fields are valid negatives only after you explicitly mark the record complete. Provide an ISO capture timestamp with timezone, evidence reference and collection context. A search result or AI Mode answer is not an AI Overview.</p>
     <p class="intro">A working scorecard for the demo brand <b>ABC</b> <span class="muted" id="demoNote"></span></p>
     <div class="runbar">
       <span class="muted">Run:</span>
       <button id="btnBase" class="active" onclick="setRun('baseline')">Baseline</button>
       <button id="btnCur" onclick="setRun('current')">Current</button>
       <span class="spacer"></span>
-      <button class="util" onclick="exportCSV()">⤓ Export CSV</button>
+      <button class="util" onclick="exportCSV()">⤓ Export CSV</button><button class="util" onclick="exportJSON()">⤓ Backup JSON</button>
       <button class="util" onclick="clearRun()">Clear This Run</button>
       <button class="util" onclick="resetDemo()">Reset to Demo</button>
     </div>
-    <p class="tabnote"><b>Baseline vs. Current:</b> two runs so you can track change over time — score a <b>Baseline</b> now, then come back each month and score a <b>Current</b> run to track your progress. The cards show the ▲ lift.</p>
-    <div class="cards" id="cards"></div>
+    <p class="tabnote"><b>Baseline vs. Current:</b> two descriptive snapshots. Compare matched prompts, cohorts, collection method and context. Different runs do not establish causal lift.</p>
+    <label>Surface <select id="surfaceFilter" onchange="dash()"></select></label>
+<label>Prompt group <select id="cohortFilter" onchange="dash()"><option value="discovery">Unbranded discovery</option><option value="evaluation">Branded evaluation</option><option value="unclassified">Unclassified</option><option value="all">All groups (mixed sample)</option></select></label>
+<p id="storageNotice" role="status"></p><div class="cards" id="cards"></div>
     <div class="byasst" id="byAsst"></div>
     <div class="summary" id="summary"></div>
   </section>
@@ -204,19 +206,7 @@
     <div class="casestudy">
       <h3 class="cs-sub">Field-Tested in Production</h3>
       <p>Used during the relaunch of an established brand's website and go-to-market after the positioning, site, and content were rebuilt from the ground up.</p>
-      <p class="cs-label">Results — 36 buyer-intent queries × 4 assistants</p>
-      <p class="cs-mini">Scored</p>
-      <div class="big">
-        <div>67%<span>Recommendation</span></div>
-        <div>72%<span>Mention</span></div>
-        <div>46%<span>Share of Voice</span></div>
-        <div>46%<span>Citation</span></div>
-        <div>100%<span>Accuracy</span></div>
-        <div>2.6<span>Avg Position</span></div>
-      </div>
-      <p class="cs-mini opp">Opportunity Identified</p>
-      <p>The scorecard surfaced an actionable per-assistant gap — the site was cited ~71% by ChatGPT &amp; Perplexity but only 14% by Gemini.</p>
-      <p class="muted">Apply the same method to any launch: a new AI product, a product rollout, or a scaleup repositioning its platform.</p>
+      <p>The field check motivated separate assistant-level reporting. Historical percentages require the original raw observations and scoring version; the synthetic demo does not reproduce that run.</p>
     </div>
   </section>
 
@@ -228,8 +218,8 @@
       <li><b>Mention Rate</b> — % of scored responses where your brand is named at all.</li>
       <li><b>Recommendation Rate</b> — % where your brand is <i>actively recommended</i>, not merely listed.</li>
       <li><b>Share of Voice</b> — your mentions ÷ (your + competitor) mentions.</li>
-      <li><b>Citation Rate</b> — % of responses that link or cite your website as a source.</li>
-      <li><b>Accuracy</b> — factual claims about your brand that are correct (optional; needs your ground-truth).</li>
+      <li><b>Citation Rate</b> — % of complete, valid answer observations that cite your website; also reported conditionally among brand mentions.</li>
+      <li><b>Accuracy</b> — complete responses classified fully correct, out of accuracy-scored responses (optional; needs ground truth). Partial and wrong remain separate.</li>
       <li><b>Average Position</b> — mean rank when you're listed among options (lower is better).</li>
     </ul>
     <p class="hitl"><b>Why Score by Hand?</b> The developer APIs behind these models don't behave like the consumer versions of ChatGPT, Gemini &amp; Perplexity, which search the web and cite sources live when your customers actually use them. Therefore, the accurate way to measure what a real buyer sees is to read the actual answer and score it. This tool makes that fast, easy, and consistent to do for any new or existing product, service, or company.</p>
@@ -242,7 +232,7 @@
       <div class="step"><div class="num">1</div><h4>Pick Your Queries</h4><p>The buyer-intent questions your customers actually ask in your category.</p></div>
       <div class="step"><div class="num">2</div><h4>Configure</h4><p>Set your brand, competitors, queries &amp; assistants below.</p></div>
       <div class="step"><div class="num">3</div><h4>Score It</h4><p>Run each query in each assistant and score what you see — here, or <a id="forkStep" href="#" target="_blank" rel="noopener">fork on GitHub</a>.</p></div>
-      <div class="step"><div class="num">4</div><h4>Track Progress</h4><p>Score it now as your <b>Baseline</b>. Come back each month and re-score in the <b>Current</b> tab — the dashboard shows your lift.</p></div>
+      <div class="step"><div class="num">4</div><h4>Track Progress</h4><p>Score it now as your <b>Baseline</b>. Repeat a comparable sample in the <b>Current</b> tab. Record dates and context before interpreting a difference.</p></div>
     </div>
     <p class="sidenote"><i>(Everything runs client-side — your scores stay in your browser; nothing is uploaded.)</i></p>
     <details><summary>Configure or Update Queries <span class="muted" id="qCount"></span></summary>
@@ -259,8 +249,7 @@
       <button class="apply" onclick="saveCfg()">Apply</button>
     </details>
     <div class="tablewrap"><table><thead><tr>
-      <th>Query</th><th>Assistant</th><th>Mentioned</th><th>Rec</th><th>Pos</th><th>Cited site</th><th>Accuracy</th><th>Competitors named</th><th>Notes</th>
-    </tr></thead><tbody id="rows"></tbody></table></div>
+<th>Query / cohort</th><th>Surface</th><th>Status</th><th>Mentioned</th><th>Recommended</th><th>Position</th><th>Cited site</th><th>Accuracy</th><th>Competitors</th><th>Captured at (ISO + timezone)</th><th>Evidence URL / reference</th><th>Location</th><th>Device</th><th>Language</th><th>Product / mode</th><th>Method</th><th>Notes</th><th>Validation</th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="resultnote"><b>Result:</b> Review the auto-updated <a href="#dashboard">Summary</a> above as your final result.</p>
   </section>
 
@@ -278,107 +267,7 @@
 </footer>
 
 <script src="data.js"></script>
-<script>
-const D = window.SCORECARD_DATA;
-const LS = 'aeo-scorecard-v1';
-const freshStore = () => ({
-  cfg: { brand: D.brand, assistants: [...D.assistants], competitors: [...D.competitors], queries: [...D.queries] },
-  baseline: JSON.parse(JSON.stringify(D.demo.baseline || {})),
-  current: JSON.parse(JSON.stringify(D.demo.current || {}))
-});
-let store = JSON.parse(localStorage.getItem(LS) || 'null') || freshStore();
-let run = 'baseline';
-const key = (q, a) => q + ' ||| ' + a;
-const save = () => localStorage.setItem(LS, JSON.stringify(store));
-const cell = (q, a) => (store[run][key(q, a)] ||= { mentioned:false, rec:false, pos:'', cited:false, acc:'', comps:[], note:'' });
-const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-function setRun(r){ run=r; document.getElementById('btnBase').classList.toggle('active',r==='baseline'); document.getElementById('btnCur').classList.toggle('active',r==='current'); render(); }
-function resetDemo(){ if(confirm('Reset both runs to the built-in demo data?')){ store=freshStore(); save(); render(); } }
-function clearRun(){ if(confirm('Clear all scores in the '+run+' run?')){ store[run]={}; save(); render(); } }
-function saveCfg(){
-  const g=id=>document.getElementById(id).value.split('\n').map(s=>s.trim()).filter(Boolean);
-  store.cfg.queries=g('cfgQ'); store.cfg.assistants=g('cfgA'); store.cfg.competitors=g('cfgC');
-  store.cfg.brand=document.getElementById('cfgBrand').value.trim()||store.cfg.brand;
-  save(); render();
-}
-
-function render(){
-  const {brand,queries,assistants,competitors}=store.cfg;
-  document.getElementById('demoNote').textContent = '· ' + run + ' run · ' + (D.capturedNote||'');
-  document.getElementById('qCount').textContent = '(' + queries.length + ' · the tool supports any number)';
-  document.getElementById('cfgQ').value=queries.join('\n');
-  document.getElementById('cfgA').value=assistants.join('\n');
-  document.getElementById('cfgC').value=competitors.join('\n');
-  document.getElementById('cfgBrand').value=brand;
-  ['forkHero','forkStep','ghFoot'].forEach(id=>document.getElementById(id).href=D.githubUrl);
-  document.getElementById('auricsFoot').href=D.auricsUrl;
-  const tb=document.getElementById('rows'); tb.innerHTML='';
-  queries.forEach(q=>assistants.forEach((a,ai)=>{
-    const c=cell(q,a); const tr=document.createElement('tr'); if(ai===0)tr.className='asst-first';
-    tr.innerHTML=`<td class="q">${ai===0?esc(q):''}</td><td class="a">${esc(a)}</td>`+
-      `<td><input type="checkbox" ${c.mentioned?'checked':''} data-k="mentioned"></td>`+
-      `<td><input type="checkbox" ${c.rec?'checked':''} data-k="rec"></td>`+
-      `<td><input type="number" min="1" value="${c.pos}" data-k="pos"></td>`+
-      `<td><input type="checkbox" ${c.cited?'checked':''} data-k="cited"></td>`+
-      `<td><select data-k="acc"><option value="">—</option>${['Correct','Partial','Wrong'].map(o=>`<option ${c.acc===o?'selected':''}>${o}</option>`).join('')}</select></td>`+
-      `<td><div class="comps">${competitors.map(cm=>`<label><input type="checkbox" data-k="comp" data-c="${esc(cm)}" ${c.comps.includes(cm)?'checked':''}>${esc(cm)}</label>`).join('')}</div></td>`+
-      `<td><input type="text" class="note-in" value="${esc(c.note)}" data-k="note"></td>`;
-    tr.querySelectorAll('[data-k]').forEach(inp=>inp.addEventListener('change',()=>{
-      const k=inp.dataset.k;
-      if(k==='comp'){const cm=inp.dataset.c; if(inp.checked){if(!c.comps.includes(cm))c.comps.push(cm);} else c.comps=c.comps.filter(x=>x!==cm);}
-      else if(inp.type==='checkbox')c[k]=inp.checked; else c[k]=inp.value;
-      save(); dash();
-    }));
-    tb.appendChild(tr);
-  }));
-  dash();
-}
-
-function metrics(which){
-  const {queries,assistants}=store.cfg, data=store[which];
-  let total=0,scored=0,mentioned=0,rec=0,cited=0,accC=0,accN=0,posS=0,posN=0,compT=0;
-  queries.forEach(q=>assistants.forEach(a=>{
-    total++; const c=data[key(q,a)]; if(!c)return;
-    if(c.mentioned||c.rec||c.pos||c.cited||c.acc||c.comps.length||c.note)scored++;
-    if(c.mentioned){mentioned++; if(c.pos){posS+=+c.pos;posN++;} if(c.acc){accN++; if(c.acc==='Correct')accC++;}}
-    if(c.rec)rec++; if(c.cited)cited++; compT+=c.comps.length;
-  }));
-  const pct=(x,y)=>y?Math.round(x/y*100):0;
-  return {total,scored,mentioned,rec,cited,mentionRate:pct(mentioned,scored),recRate:pct(rec,scored),
-    citeRate:pct(cited,mentioned),accRate:pct(accC,accN),avgPos:posN?(posS/posN).toFixed(1):'—',sov:pct(mentioned,mentioned+compT)};
-}
-
-function dash(){
-  const m=metrics(run),b=metrics('baseline');
-  const showD=run==='current';
-  const d=(now,base)=>showD?` <span class="${now>=base?'up':'down'}">${now>=base?'▲':'▼'}${Math.abs(now-base)}</span>`:'';
-  const cards=[
-    ['Recommendation rate',m.recRate+'%','recommended ÷ scored',d(m.recRate,b.recRate)],
-    ['Mention rate',m.mentionRate+'%','named ÷ scored',d(m.mentionRate,b.mentionRate)],
-    ['Share of voice',m.sov+'%','brand ÷ (brand+competitor)',d(m.sov,b.sov)],
-    ['Citation rate',m.citeRate+'%','cited site ÷ mentions',d(m.citeRate,b.citeRate)],
-    ['Accuracy',m.accRate+'%','facts correct ÷ claims',''],
-    ['Avg. position',m.avgPos,'rank when listed',''],
-    ['Responses scored',m.scored+'/'+m.total,'coverage','']
-  ];
-  document.getElementById('cards').innerHTML=cards.map(c=>`<div class="card${c[3]?' delta':''}"><div class="n">${c[1]}${c[3]}</div><div class="l">${c[0]}</div><div class="d">${c[2]}</div></div>`).join('');
-  const {queries,assistants}=store.cfg,data=store[run];
-  document.getElementById('byAsst').innerHTML='<table><tbody>'+assistants.map(a=>{
-    let t=0,men=0,r=0,ci=0; queries.forEach(q=>{t++;const c=data[key(q,a)];if(!c)return;if(c.mentioned)men++;if(c.rec)r++;if(c.cited)ci++;});
-    return `<tr><td class="a">${esc(a)}</td><td>${Math.round(men/t*100)}% mentioned</td><td>${Math.round(r/t*100)}% rec</td><td>${Math.round(ci/(men||1)*100)}% cited</td></tr>`;
-  }).join('')+'</tbody></table>';
-  const line=`${esc(store.cfg.brand)} is recommended in ${m.recRate}% of ${m.scored} category queries across ${assistants.length} AI assistants (share of voice ${m.sov}% vs ${store.cfg.competitors.length} competitors)`+(showD&&b.scored?`, up from a ${b.recRate}% baseline.`:`.`);
-  document.getElementById('summary').innerHTML=`<b>Summary</b> <span class="muted">(auto-fills as you score; run a Baseline, then a Current run after optimizations for the before/after)</span><code>${esc(line)}</code>`;
-}
-
-function CASE_HTML(){
-  return `<p><b>Built and measured with this scorecard</b> during the relaunch of an <b>established brand's website and go-to-market</b> — positioning, site, and AEO rebuilt from the ground up (anonymized). Across <b>36 buyer-intent queries × 4 assistants</b>:</p>
-    <div class="big"><div>67%<span>Recommendation</span></div><div>46%<span>Citation</span></div><div>46%<span>Share of voice</span></div><div>2.6<span>Avg position</span></div></div>
-    <p class="muted">It surfaced an actionable per-assistant gap — the site was cited ~71% by ChatGPT &amp; Perplexity but only 14% by Gemini. The same method applies to any launch: a new AI product, a fintech rollout, or a scaleup repositioning its platform.</p>`;
-}
-
-render();
-</script>
+<script src="scoring.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
