@@ -1,77 +1,47 @@
 # AI Visibility Scorecard
 
-> Part of **[Aurics](https://github.com/raina7sri/aurics)** — AI-native GTM tools, built in the open. · [aurics.ai](https://aurics.ai)
+A local browser tool for **manual** observations of ChatGPT, Gemini, Perplexity, Claude and **Google AI Overviews**. It does not query or scrape these products. Google AI Overviews is separate from Gemini and AI Mode.
 
-A free, open-source tool to measure how AI assistants — **ChatGPT, Gemini, Perplexity, and Claude** — recommend, mention, and cite a brand when buyers ask category questions. It answers the question traditional SEO tools can't: **is my brand actually surfacing in AI search?** (Also known as AEO / Answer Engine Optimization.)
+Open `index.html` locally or host these static files. `data.js` contains synthetic examples, `scoring.js` defines versioned metrics, and `app.js` provides editing, filters and export. No keys or backend are required for manual scoring. Your assistant access may have its own costs.
 
-Runs entirely in the browser. No backend, no API keys, no cost. Works for any brand or category — from local services to enterprise product launches.
+## Collect and score
 
-**Live demo:** [aurics.ai/scorecard](https://aurics.ai) · Built on Claude Code as part of an AI-native GTM measurement stack.
+1. Export existing v1 data before updating where possible. V1 browser storage is preserved. Imported legacy rows are excluded as `legacy_review` until explicitly reviewed; v2 is stored separately.
+2. Configure brand, competitors, queries and surfaces. Changing brand starts empty runs. Classify prompts as discovery, evaluation or unclassified. The dashboard defaults to discovery and excludes AI Overviews from combined assistant reporting.
+3. Ask the exact prompt in the actual product. For AI Overviews, use a Google Search query and observe the overview, not the local pack, organic links, Gemini or AI Mode.
+4. Record capture time (ISO with timezone), evidence reference, location, device, language, product/mode and collection method. Do not put private customer details in public evidence links.
+5. Mark `complete` only for a collected answer. All-negative complete rows count. Use `no_overview` only for a successfully observed search with no overview; use `unavailable` or `invalid` for collection failure. Empty/unrun rows never mean zero visibility.
+6. Score brand mention, active recommendation, owned-site citation, explicit list position, accuracy and named tracked competitors. Leave position blank for unranked prose. A site can be cited without the brand being named.
+7. Review validation and provenance warnings. Export CSV for analysis and JSON for a full backup. CSV neutralizes formula-like cells; use JSON to preserve exact text. Raw responses/screenshots remain at the evidence reference, not inside the export unless recorded in notes.
 
-**Substack:** [Building the AI Visibility Tracker](https://gtmbuilder.substack.com/p/one-ai-assistant-gap-is-still-a-gtm)
+## Formula contract: visibility-v2
 
-**Substack:** [4 AI Tools to Answer What To Do About AEO](https://gtmbuilder.substack.com/p/experience-why-i-built-four-aeo-tools)
+Every answer metric reports numerator/denominator; zero denominators are not estimable. Only valid complete responses count as answers. Invalid combinations are excluded and surfaced.
 
-**Substack:** [6-Layer AEO + SEO Build Checklist for an AI-Native Marketing Engine](https://gtmbuilder.substack.com/p/framework-an-aeo-seo-build-checklist)
-
----
-
-## The six metrics
-
-| Metric | Definition |
+| Metric | Formula |
 |---|---|
-| **Recommendation Rate** | % of scored responses where the brand is *actively recommended* (not merely listed) |
-| **Mention Rate** | % of scored responses where the brand is named at all |
-| **Share of Voice** | brand mentions ÷ (brand + competitor) mentions |
-| **Citation Rate** | % of mentions where the brand's website is cited/linked as a source |
-| **Accuracy** *(optional)* | factual claims about the brand that are correct ÷ claims made (needs brand ground-truth) |
-| **Average Position** | mean rank when the brand is listed among options (lower is better) |
+| Mention | Mentioned / complete valid answers |
+| Recommendation | Actively recommended / complete valid answers |
+| Owned-site citation | Site cited / complete valid answers |
+| Citation among mentions | Both named and site cited / mentioned answers |
+| Sample share of voice | Named brand observations / (named brand + distinct tracked-competitor observations) |
+| Fully correct responses | Correct / (Correct + Partial + Wrong) accuracy-scored responses |
+| Average observed position | Mean positive integer rank where explicitly provided |
+| AI Overview trigger | Overview present / valid searches, including no-overview searches |
+| AIO citation across searches | Site cited / valid searches, including no-overview searches |
 
-Plus a **per-assistant breakdown** — visibility differs meaningfully across ChatGPT vs Gemini vs Perplexity vs Claude, and that gap is usually where the action is.
+Answer metrics on the AI Overviews surface are conditional on an overview appearing. The two additional search metrics retain successfully observed no-overview searches. Request failures do not enter either denominator. Branded evaluation and unbranded discovery are separate cohorts. These measures are prompt-sample descriptions, not market share or measured impressions.
 
-## Why human-in-the-loop (methodology)
+## Comparison and limitations
 
-Scoring is manual by design. The raw model **APIs are not the consumer assistants** — they don't reproduce the live browsing/grounding that ChatGPT, Gemini, and Perplexity use to answer real users, so API runs would give misleading numbers, and scraping the consumer UIs is fragile and against ToS. The only faithful measurement is to **run the query in the real assistant, read the answer, and score what you see.** That's what this tool streamlines — and it's why it costs nothing to run.
+Baseline and Current are descriptive snapshots, not causal lift. Match query set, cohort, engine/mode, geography, device, language, collection method and coverage before interpretation. Keep evidence; exclude synthetic examples from real reporting. Version 1 figures are not directly comparable with v2; recompute original raw observations if available. Historical public metrics are not substantiated by the fictional demo dataset.
 
-## Quick start
+AI Overview support in this change is **manual capture and scoring**. Automated collection and native GSC reporting require separate source validation and are not implemented here. No paid service is enabled by this repository. See [AI Overviews collection design](docs/ai-overviews.md).
 
-1. **Download or clone** this repo.
-2. **Open `index.html`** in any browser (double-click — no server needed).
-3. You'll see the demo dashboard populated with a fictional brand's dataset.
-4. To score your own: run each **query** in each **assistant**, then fill each row (Mentioned / Rec / Position / Cited / Accuracy / Competitors named). The dashboard recalculates live. Your data stays in your browser (`localStorage`).
-5. Use **Baseline** and **Current** runs to measure before/after an optimization push. **Export CSV** to archive.
+## Validation
 
-## Customize (no code changes)
-
-Everything is in **`data.js`** — edit it and reload:
-
-```js
-window.SCORECARD_DATA = {
-  brand: "Your Brand",
-  competitors: ["Rival A", "Rival B", ...],
-  assistants: ["ChatGPT", "Gemini", "Perplexity", "Claude"],
-  queries: ["your buyer-intent query 1", ...],
-  demo: { baseline: { /* pre-scored cells */ }, current: {} },
-  githubUrl: "...", auricsUrl: "..."
-};
-```
-
-You can also edit brand/competitors/queries live via the **Configure** panel in the UI.
-
-## What's in the box
-
-- `index.html` — the tool + page (only depends on `data.js`)
-- `data.js` — the dataset (edit this)
-- `logo.svg` — header logo
-- `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` — icons
-- `og-image.png` — social share card (1200×630)
-- `README.md` — you're reading it
-- `LICENSE` — MIT
-
-## Notes on the demo data
-
-The bundled dataset scores a **fictional placeholder brand ("ABC")** with **illustrative** numbers — including a Baseline and a "Current" run so you can see the before/after view — so the demo works out of the box with no real client data. Swap in your own brand and score real runs to get real numbers. The tool supports any number of queries and assistants.
+Run `node --test tests/scoring.test.js` and `node --check app.js`. Automated tests cover denominators, valid negatives, missing observations, AIO trigger states, accuracy, ranks, migration and CSV safety. Browser rendering, browser-storage migration, actual CSV download and a supervised real collection remain acceptance checks before merging/deployment.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Use it, fork it, ship it.
+MIT — see LICENSE in the upstream repository.
