@@ -157,7 +157,7 @@
     <p class="lead">Measure how ChatGPT, Gemini, Perplexity &amp; Claude <b>recommend, mention, and cite</b> your brand when buyers ask category questions — the metric traditional SEO tools miss.</p>
     <ul class="value-bullets">
       <li>Works for any brand or category, at any stage — a Fortune 500 launching a new product, an established brand repositioning, or an early-stage startup entering a category.</li>
-      <li>The demo scores a fictional placeholder brand, <b>ABC</b>, against 4 assistants — swap in your own in seconds.</li>
+      <li>The working example below uses sample entries for a placeholder brand, <b>ABC</b>, to show how scoring works — replace them with your own.</li>
     </ul>
     <div class="value-checks">
       <span><b>✓</b> Fully customizable</span>
@@ -182,7 +182,7 @@
   <!-- 2 · LIVE DEMO DASHBOARD -->
   <section class="block" id="dashboard">
     <h2>See It Live</h2>
-    <p class="intro">A working scorecard for the demo brand <b>ABC</b> <span class="muted" id="demoNote"></span></p>
+    <p class="intro">A working scorecard with sample entries for placeholder brand <b>ABC</b> (illustrative, not client data) <span class="muted" id="demoNote"></span></p>
     <div class="runbar">
       <span class="muted">Run:</span>
       <button id="btnBase" class="active" onclick="setRun('baseline')">Baseline</button>
@@ -204,18 +204,18 @@
     <div class="casestudy">
       <h3 class="cs-sub">Field-Tested in Production</h3>
       <p>Used during the relaunch of an established brand's website and go-to-market after the positioning, site, and content were rebuilt from the ground up.</p>
-      <p class="cs-label">Results — 36 buyer-intent queries × 4 assistants</p>
+      <p class="cs-label">Results — one run, 36 buyer-intent queries × 4 assistants</p>
       <p class="cs-mini">Scored</p>
       <div class="big">
         <div>67%<span>Recommendation</span></div>
         <div>72%<span>Mention</span></div>
         <div>46%<span>Share of Voice</span></div>
-        <div>46%<span>Citation</span></div>
+        <div>46%<span>Cited (of mentions)</span></div>
         <div>100%<span>Accuracy</span></div>
         <div>2.6<span>Avg Position</span></div>
       </div>
       <p class="cs-mini opp">Opportunity Identified</p>
-      <p>The scorecard surfaced an actionable per-assistant gap — the site was cited ~71% by ChatGPT &amp; Perplexity but only 14% by Gemini.</p>
+      <p>The scorecard surfaced an actionable per-assistant gap — the site was cited in ~71% of ChatGPT and Perplexity answers that named the brand, but in 14% of Gemini's.</p>
       <p class="muted">Apply the same method to any launch: a new AI product, a product rollout, or a scaleup repositioning its platform.</p>
     </div>
   </section>
@@ -228,7 +228,7 @@
       <li><b>Mention Rate</b> — % of scored responses where your brand is named at all.</li>
       <li><b>Recommendation Rate</b> — % where your brand is <i>actively recommended</i>, not merely listed.</li>
       <li><b>Share of Voice</b> — your mentions ÷ (your + competitor) mentions.</li>
-      <li><b>Citation Rate</b> — % of responses that link or cite your website as a source.</li>
+      <li><b>Citation Rate</b> — % of responses that mention your brand and also link your website as a source.</li>
       <li><b>Accuracy</b> — factual claims about your brand that are correct (optional; needs your ground-truth).</li>
       <li><b>Average Position</b> — mean rank when you're listed among options (lower is better).</li>
     </ul>
@@ -374,8 +374,8 @@ function dash(){
 
 function CASE_HTML(){
   return `<p><b>Built and measured with this scorecard</b> during the relaunch of an <b>established brand's website and go-to-market</b> — positioning, site, and AEO rebuilt from the ground up (anonymized). Across <b>36 buyer-intent queries × 4 assistants</b>:</p>
-    <div class="big"><div>67%<span>Recommendation</span></div><div>46%<span>Citation</span></div><div>46%<span>Share of voice</span></div><div>2.6<span>Avg position</span></div></div>
-    <p class="muted">It surfaced an actionable per-assistant gap — the site was cited ~71% by ChatGPT &amp; Perplexity but only 14% by Gemini. The same method applies to any launch: a new AI product, a fintech rollout, or a scaleup repositioning its platform.</p>`;
+    <div class="big"><div>67%<span>Recommendation</span></div><div>46%<span>Cited (of mentions)</span></div><div>46%<span>Share of voice</span></div><div>2.6<span>Avg position</span></div></div>
+    <p class="muted">It surfaced an actionable per-assistant gap — the site was cited in ~71% of ChatGPT and Perplexity answers that named the brand, but in 14% of Gemini's. The same method applies to any launch: a new AI product, a fintech rollout, or a scaleup repositioning its platform.</p>`;
 }
 
 render();
